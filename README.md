@@ -1,11 +1,11 @@
 # Gemini Multimodal Education Demos
 
 ## Introduction
-This repository contains educational demo applications that utilize multimodal inputs to enhance learning experiences. The demos are built using React and Chakra UI, and they leverage the GoogleGenerativeAI API for generating content based on user inputs.
+This repository contains educational demo applications that utilize multimodal inputs to enhance learning experiences. The demos are built using React and Chakra UI, and they leverage the GoogleGenerativeAI API for generating content based on user inputs. The applications now include customizable prompts, an API key input field, and voice functionality using the Web Speech API.
 
 ## Applications
 The repository includes the following demo applications:
-- **App 1**: Demo for math learning
+- **Math Demo**: Demo for math learning
 - **App 2**: Demo for curiosity and questions about objects
 - **App 3**: Demo for science sketches
 
@@ -34,10 +34,10 @@ To set up the development environment and run the applications locally, follow t
 To customize the applications for other learning scenarios, follow these steps:
 
 1. **Modify the App Files**
-   The app files (`app1.js`, `app2.js`, `app3.js`) contain the core logic and UI components. You can modify these files to change the behavior and appearance of the applications.
+   The app files (`math_demo.js`, `app2.js`, `app3.js`) contain the core logic and UI components. You can modify these files to change the behavior and appearance of the applications.
 
 2. **Update API Keys**
-   The applications use the GoogleGenerativeAI API for generating content. To use this API, you need to obtain your own API key from the Google Cloud Console. Replace the placeholder API key values in the app files with your actual API key.
+   The applications use the GoogleGenerativeAI API for generating content. To use this API, you need to obtain your own API key from the Google Cloud Console. Enter the API key in the provided input field in the browser interface. The input field will disappear once the key is set.
 
 ## Obtaining API Keys
 To obtain the API keys required for the applications, follow these steps:
@@ -46,7 +46,7 @@ To obtain the API keys required for the applications, follow these steps:
 2. Create a new project or select an existing project.
 3. Enable the GoogleGenerativeAI API for your project.
 4. Create API credentials and obtain the API key.
-5. Replace the placeholder API key values in the app files with your actual API key.
+5. Enter the API key in the provided input field in the browser interface.
 
 ## Deployment
 To deploy the applications, follow these steps:
