@@ -10,58 +10,20 @@ import {
   Flex,
   useToast,
   HStack,
-  extendTheme,
   ColorModeScript,
   useColorMode,
 } from '@chakra-ui/react';
+import customTheme from './shared/theme';
 import Webcam from 'react-webcam';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-
-const customTheme = extendTheme({
-  colors: {
-    primary: {
-      50: '#f0f8ff',
-      100: '#ccebff',
-      200: '#a0d4ff',
-      300: '#70c0ff',
-      400: '#38b0ff',
-      500: '#00a0ff',
-      600: '#0080ff',
-      700: '#0060ff',
-      800: '#0040ff',
-      900: '#0020ff',
-    },
-    secondary: {
-      50: '#f0f8ff',
-      100: '#ccebff',
-      200: '#a0d4ff',
-      300: '#70c0ff',
-      400: '#38b0ff',
-      500: '#00a0ff',
-      600: '#0080ff',
-      700: '#0060ff',
-      800: '#0040ff',
-      900: '#0020ff',
-    },
-  },
-  fonts: {
-    heading: 'Poppins, sans-serif',
-    body: 'Poppins, sans-serif',
-  },
-  styles: {
-    global: {
-      body: {
-        bg: 'primary.50',
-        color: 'gray.800',
-      },
-    },
-  },
-});
 
 function App() {
   const [ocrResult, setOcrResult] = useState('');
   const [feedback, setFeedback] = useState('');
   const [webcamReady, setWebcamReady] = useState(false);
+  const [apiKey, setApiKey] = useState('');
+  const [customPrompt, setCustomPrompt] = useState('');
+  const [apiKeySet, setApiKeySet] = useState(false);
   const webcamRef = useRef(null);
   const toast = useToast();
   const { colorMode } = useColorMode();
@@ -87,7 +49,6 @@ function App() {
       }
 
       try {
-        const apiKey = ""; // Replace with your actual API key
         if (!apiKey) {
           throw new Error("API key is not set.");
         }
@@ -106,15 +67,16 @@ function App() {
               mimeType: "image/jpeg",
             },
           };
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-          const result = await model.generateContent(["Ask 10 short questions about this object that could stimulate a child's curiosity", imagePart]);
 
+          const result = await model.generateContent([customPrompt, imagePart]);
           const response = await result.response;
           const text = response.text();
-
           setOcrResult(text);
           setFeedback('waiting for new object');
 
+          // Text-to-speech functionality using Web Speech API
+          const utterance = new SpeechSynthesisUtterance(text);
+          window.speechSynthesis.speak(utterance);
         } else {
           console.error("Error: Captured image source is null.");
         }
@@ -142,6 +104,25 @@ function App() {
             <Heading as="h2" size="lg" mb={8} color="primary.600">
               Instructions: Hold an object up to the camera
             </Heading>
+            {!apiKeySet && (
+              <Box>
+                <Text>Enter API Key:</Text>
+                <input
+                  type="text"
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                />
+                <button onClick={() => setApiKeySet(true)}>Set API Key</button>
+              </Box>
+            )}
+            <Box>
+              <Text>Enter Custom Prompt:</Text>
+              <input
+                type="text"
+                value={customPrompt}
+                onChange={(e) => setCustomPrompt(e.target.value)}
+              />
+            </Box>
             <Flex direction="row" justify="space-between" w="100%">
               <Box flex="1" p={4} borderWidth="1px" borderRadius="lg">
                 <HStack spacing={4}>
