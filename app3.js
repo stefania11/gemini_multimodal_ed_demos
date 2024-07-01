@@ -12,6 +12,8 @@ import {
   HStack,
   ColorModeScript,
   useColorMode,
+  Input,
+  Button,
 } from '@chakra-ui/react';
 import Webcam from 'react-webcam';
 import { GoogleGenerativeAI } from '@google/generative-ai';
@@ -21,6 +23,9 @@ function App() {
   const [ocrResult, setOcrResult] = useState('');
   const [feedback, setFeedback] = useState('');
   const [webcamReady, setWebcamReady] = useState(false);
+  const [apiKey, setApiKey] = useState('');
+  const [customPrompt, setCustomPrompt] = useState('');
+  const [apiKeySet, setApiKeySet] = useState(false);
   const webcamRef = useRef(null);
   const toast = useToast();
   const { colorMode } = useColorMode();
@@ -46,7 +51,6 @@ function App() {
       }
 
       try {
-        const apiKey = ""; // Replace with your actual API key
         if (!apiKey) {
           throw new Error("API key is not set.");
         }
@@ -66,7 +70,7 @@ function App() {
             },
           };
           await new Promise((resolve) => setTimeout(resolve, 1000));
-          const result = await model.generateContent(["Interpret this sketch in a short phrase and ask a follow-up question that would allow a child to formulate a hypothesis about what could happen next", imagePart]);
+          const result = await model.generateContent([customPrompt, imagePart]);
 
           const response = await result.response;
           const text = response.text();
@@ -87,7 +91,7 @@ function App() {
     }, 2000);
 
     return () => clearInterval(intervalId);
-  }, [toast, webcamReady]);
+  }, [toast, webcamReady, apiKey, customPrompt]);
 
   return (
     <ChakraProvider theme={customTheme}>
@@ -101,6 +105,23 @@ function App() {
             <Heading as="h2" size="lg" mb={8} color="primary.600">
               Instructions: Draw a sketch about a science idea or question you have and hold it up to the webcam.
             </Heading>
+            {!apiKeySet && (
+              <Box>
+                <Input
+                  placeholder="Enter API Key"
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                />
+                <Button onClick={() => setApiKeySet(true)}>Set API Key</Button>
+              </Box>
+            )}
+            <Box>
+              <Input
+                placeholder="Enter Custom Prompt"
+                value={customPrompt}
+                onChange={(e) => setCustomPrompt(e.target.value)}
+              />
+            </Box>
             <Flex direction="row" justify="space-between" w="100%">
               <Box flex="1" p={4} borderWidth="1px" borderRadius="lg">
                 <HStack spacing={4}>
